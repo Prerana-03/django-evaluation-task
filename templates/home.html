@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - App Downloader{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <section class="py-5 text-center fade-in">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <h1 class="display-4 mb-4">Download Apps, Earn Points</h1>
+                <p class="lead mb-4">
+                    Download and try new Android apps, submit a screenshot as proof, and earn points for each downloaded app.
+                    Join our community today and start earning!
+                </p>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'user_dashboard' %}" class="btn btn-primary btn-lg px-4 me-md-2">Go to Dashboard</a>
+                    {% else %}
+                        <a href="{% url 'signup' %}" class="btn btn-primary btn-lg px-4 me-md-2">Sign Up Now</a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg px-4">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform Stats -->
+    <section class="py-4">
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card dashboard-card card-success h-100">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-3 text-center">
+                                <i class="fas fa-users fa-3x text-success"></i>
+                            </div>
+                            <div class="col-9">
+                                <h5 class="card-title">Total Users</h5>
+                                <p class="card-text display-6">{{ num_users }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card card-info h-100">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-3 text-center">
+                                <i class="fas fa-mobile-alt fa-3x text-info"></i>
+                            </div>
+                            <div class="col-9">
+                                <h5 class="card-title">Available Apps</h5>
+                                <p class="card-text display-6">{{ num_apps }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card card-warning h-100">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-3 text-center">
+                                <i class="fas fa-award fa-3x text-warning"></i>
+                            </div>
+                            <div class="col-9">
+                                <h5 class="card-title">Points Available</h5>
+                                <p class="card-text display-6">∞</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-4">
+        <h2 class="text-center mb-4">How It Works</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-download fa-4x text-primary mb-3"></i>
+                            <h3 class="card-title">1. Download Apps</h3>
+                        </div>
+                        <p class="card-text">Browse our collection of Android apps and choose ones you're interested in trying out.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-camera fa-4x text-primary mb-3"></i>
+                            <h3 class="card-title">2. Submit Screenshot</h3>
+                        </div>
+                        <p class="card-text">Take a screenshot showing the app installed on your device and submit it as proof.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-coins fa-4x text-primary mb-3"></i>
+                            <h3 class="card-title">3. Earn Points</h3>
+                        </div>
+                        <p class="card-text">Once your submission is approved, you'll earn points that you can redeem for rewards.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Users -->
+    <section class="py-4">
+        <h2 class="text-center mb-4">Top Point Earners</h2>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user, profile in top_users %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ user.username }}</td>
+                            <td><span class="point-badge">{{ profile.total_points }}</span></td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center">No users yet</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+{% endblock %}

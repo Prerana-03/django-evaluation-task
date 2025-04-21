@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}Download {{ app.name }} - App Downloader{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dropzone {
+        border: 2px dashed #ccc;
+        border-radius: 4px;
+        padding: 40px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .dropzone:hover, .dropzone.dragover {
+        border-color: #007bff;
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+    
+    .dropzone .icon {
+        font-size: 3rem;
+        color: #6c757d;
+        margin-bottom: 15px;
+    }
+    
+    .dropzone.dragover .icon {
+        color: #007bff;
+    }
+    
+    .uploaded-preview {
+        max-width: 100%;
+        max-height: 300px;
+        margin-top: 20px;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg mt-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <a href="{% url 'user_dashboard' %}" class="btn btn-outline-secondary me-3">
+                            <i class="fas fa-arrow-left"></i>
+                        </a>
+                        <h2 class="card-title mb-0">
+                            <i class="fas fa-download me-2 text-primary"></i>Download {{ app.name }}
+                        </h2>
+                    </div>
+                    
+                    <!-- App Details Section -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                {% if app.icon_url %}
+                                    <img src="{{ app.icon_url }}" alt="{{ app.name }}" class="me-3" width="64" height="64">
+                                {% else %}
+                                    <i class="fas fa-mobile-alt fa-3x me-3 text-muted"></i>
+                                {% endif %}
+                                <div>
+                                    <h4 class="mb-1">{{ app.name }}</h4>
+                                    <p class="text-muted mb-0 small">{{ app.package_name }}</p>
+                                </div>
+                                <span class="ms-auto badge bg-success fs-5">{{ app.points }} Points</span>
+                            </div>
+                            
+                            <p>{{ app.description }}</p>
+                            
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Download this app, take a screenshot showing the app is installed on your device, and upload the screenshot to earn {{ app.points }} points!
+                            </div>
+                            
+                            <div class="d-grid">
+                                <a href="{{ app.app_url }}" target="_blank" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-external-link-alt me-2"></i>Download App
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Screenshot Submission Section -->
+                    {% if existing_task %}
+                        {% if existing_task.status == 'approved' %}
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <strong>Task Already Completed!</strong> You've already earned {{ existing_task.points_earned }} points for this app.
+                            </div>
+                            <div class="text-center">
+                                <img src="{{ existing_task.screenshot.url }}" alt="Your screenshot" class="uploaded-preview">
+                            </div>
+                        {% elif existing_task.status == 'pending' %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-hourglass-half me-2"></i>
+                                <strong>Task Under Review!</strong> Your submission is pending approval.
+                            </div>
+                            <div class="text-center">
+                                <img src="{{ existing_task.screenshot.url }}" alt="Your screenshot" class="uploaded-preview">
+                            </div>
+                        {% else %}
+                            <!-- Rejected: Allow resubmission -->
+                            <div class="alert alert-danger mb-4">
+                                <i class="fas fa-times-circle me-2"></i>
+                                <strong>Previous submission was rejected:</strong> {{ existing_task.admin_notes }}
+                            </div>
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                
+                                <h5 class="mb-3">Upload Screenshot</h5>
+                                
+                                <div id="dropzone" class="dropzone mb-3">
+                                    <div class="icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <p class="mb-2">Drag & drop a screenshot here, or click to select a file</p>
+                                    <p class="text-muted small">Show the app installed or running on your device</p>
+                                    
+                                    {{ form.screenshot }}
+                                </div>
+                                
+                                <div id="preview" class="text-center" style="display: none;">
+                                    <img id="image-preview" class="uploaded-preview">
+                                </div>
+                                
+                                {% if form.screenshot.errors %}
+                                    <div class="alert alert-danger mt-2">
+                                        {{ form.screenshot.errors }}
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="d-grid mt-4">
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        <i class="fas fa-paper-plane me-2"></i>Submit Screenshot
+                                    </button>
+                                </div>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            <h5 class="mb-3">Upload Screenshot</h5>
+                            
+                            <div id="dropzone" class="dropzone mb-3">
+                                <div class="icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <p class="mb-2">Drag & drop a screenshot here, or click to select a file</p>
+                                <p class="text-muted small">Show the app installed or running on your device</p>
+                                
+                                {{ form.screenshot }}
+                            </div>
+                            
+                            <div id="preview" class="text-center" style="display: none;">
+                                <img id="image-preview" class="uploaded-preview">
+                            </div>
+                            
+                            {% if form.screenshot.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {{ form.screenshot.errors }}
+                                </div>
+                            {% endif %}
+                            
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Screenshot
+                                </button>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/drag_drop.js"></script>
+{% endblock %}

@@ -1,0 +1,101 @@
+/* Custom styles for App Downloader */
+
+/* Card hover effects */
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Point badge styles */
+.point-badge {
+    background-color: var(--bs-success);
+    color: white;
+    font-weight: bold;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+/* Animation for the homepage hero section */
+.fade-in {
+    animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Custom button styles */
+.btn-primary {
+    background-color: #6610f2;
+    border-color: #6610f2;
+}
+
+.btn-primary:hover {
+    background-color: #520dc2;
+    border-color: #520dc2;
+}
+
+/* Custom styling for forms */
+.form-control:focus {
+    border-color: #6610f2;
+    box-shadow: 0 0 0 0.25rem rgba(102, 16, 242, 0.25);
+}
+
+/* Custom styles for app cards */
+.app-card {
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.app-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.app-card-img {
+    height: 100px;
+    width: 100px;
+    object-fit: contain;
+    margin: 1rem auto;
+}
+
+/* Custom styling for admin sections */
+.admin-section {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Styling for task screenshots */
+.task-screenshot {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+/* Status badges */
+.status-badge {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+}
+
+.status-pending {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.status-approved {
+    background-color: #198754;
+    color: white;
+}
+
+.status-rejected {
+    background-color: #dc3545;
+    color: white;
+}

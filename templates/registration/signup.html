@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - App Downloader{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg mt-4">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+                        <h2>Create an Account</h2>
+                        <p class="text-muted">Join App Downloader and start earning points</p>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <strong>Error:</strong> Please correct the errors below.
+                            </div>
+                        {% endif %}
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="id_username" class="form-label">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" name="username" id="id_username" class="form-control {% if form.username.errors %}is-invalid{% endif %}" placeholder="Choose a username" required>
+                                </div>
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.username.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="id_email" class="form-label">Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <input type="email" name="email" id="id_email" class="form-control" placeholder="Your email address">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label for="id_password1" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" name="password1" id="id_password1" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" placeholder="Create a password" required>
+                                </div>
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.password1.errors }}
+                                    </div>
+                                {% endif %}
+                                <small class="text-muted">
+                                    Password must be at least 8 characters and can't be too common.
+                                </small>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="id_password2" class="form-label">Confirm Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" name="password2" id="id_password2" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" placeholder="Repeat your password" required>
+                                </div>
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.password2.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Sign Up
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

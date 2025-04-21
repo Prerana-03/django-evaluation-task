@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - App Downloader{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg mt-4">
+                <div class="card-body p-4">
+                    <h2 class="card-title mb-4">
+                        {% if app %}
+                            <i class="fas fa-edit me-2 text-primary"></i>Edit App: {{ app.name }}
+                        {% else %}
+                            <i class="fas fa-plus-circle me-2 text-primary"></i>Add New App
+                        {% endif %}
+                    </h2>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <strong>Error:</strong> Please correct the errors below.
+                            </div>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">App Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-mobile-alt"></i></span>
+                                {{ form.name }}
+                            </div>
+                            {% if form.name.errors %}
+                                <div class="invalid-feedback d-block">{{ form.name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.package_name.id_for_label }}" class="form-label">Package Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-cube"></i></span>
+                                {{ form.package_name }}
+                            </div>
+                            <small class="text-muted">The unique identifier for the app (e.g., com.example.app)</small>
+                            {% if form.package_name.errors %}
+                                <div class="invalid-feedback d-block">{{ form.package_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback d-block">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.points.id_for_label }}" class="form-label">Points</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-star"></i></span>
+                                {{ form.points }}
+                            </div>
+                            <small class="text-muted">Number of points users will earn for downloading this app</small>
+                            {% if form.points.errors %}
+                                <div class="invalid-feedback d-block">{{ form.points.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.icon_url.id_for_label }}" class="form-label">Icon URL</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-image"></i></span>
+                                {{ form.icon_url }}
+                            </div>
+                            <small class="text-muted">URL to the app's icon image</small>
+                            {% if form.icon_url.errors %}
+                                <div class="invalid-feedback d-block">{{ form.icon_url.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.app_url.id_for_label }}" class="form-label">App URL</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-link"></i></span>
+                                {{ form.app_url }}
+                            </div>
+                            <small class="text-muted">URL where users can download the app</small>
+                            {% if form.app_url.errors %}
+                                <div class="invalid-feedback d-block">{{ form.app_url.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'admin_app_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if app %}
+                                    <i class="fas fa-save me-2"></i>Update App
+                                {% else %}
+                                    <i class="fas fa-plus-circle me-2"></i>Add App
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

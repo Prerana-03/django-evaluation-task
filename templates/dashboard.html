@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - App Downloader{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Your Dashboard</h1>
+    
+    <!-- User Stats -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card dashboard-card card-success">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-3 text-center">
+                            <i class="fas fa-coins fa-3x text-success"></i>
+                        </div>
+                        <div class="col-9">
+                            <h5 class="card-title">Total Points</h5>
+                            <p class="card-text display-6">{{ profile.total_points }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card dashboard-card card-info">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-3 text-center">
+                            <i class="fas fa-tasks fa-3x text-info"></i>
+                        </div>
+                        <div class="col-9">
+                            <h5 class="card-title">Completed Tasks</h5>
+                            <p class="card-text display-6">{{ task_completions|length }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card dashboard-card card-warning">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-3 text-center">
+                            <i class="fas fa-mobile-alt fa-3x text-warning"></i>
+                        </div>
+                        <div class="col-9">
+                            <h5 class="card-title">Available Apps</h5>
+                            <p class="card-text display-6">{{ available_apps|length }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Dashboard Tabs -->
+    <ul class="nav nav-tabs mb-4" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="available-tab" data-bs-toggle="tab" data-bs-target="#available" 
+                    type="button" role="tab" aria-controls="available" aria-selected="true">
+                Available Apps
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="completed-tab" data-bs-toggle="tab" data-bs-target="#completed" 
+                    type="button" role="tab" aria-controls="completed" aria-selected="false">
+                Your Submissions
+            </button>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="dashboardTabsContent">
+        <!-- Available Apps Tab -->
+        <div class="tab-pane fade show active" id="available" role="tabpanel" aria-labelledby="available-tab">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for app in available_apps %}
+                    <div class="col">
+                        <div class="card h-100">
+                            {% if app.icon_url %}
+                                <img src="{{ app.icon_url }}" class="card-img-top p-3" alt="{{ app.name }}" style="max-height: 200px; object-fit: contain;">
+                            {% else %}
+                                <div class="text-center p-3">
+                                    <i class="fas fa-mobile-alt fa-5x text-secondary"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="card-body">
+                                <h5 class="card-title">{{ app.name }}</h5>
+                                <span class="badge bg-success mb-2">{{ app.points }} points</span>
+                                <p class="card-text">{{ app.description|truncate(100) }}</p>
+                            </div>
+                            
+                            <div class="card-footer bg-transparent d-grid">
+                                <a href="{{ url_for('app_detail', app_id=app.id) }}" class="btn btn-primary">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> You've completed all available tasks! Check back later for new apps.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Completed Tasks Tab -->
+        <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>App</th>
+                            <th>Status</th>
+                            <th>Points</th>
+                            <th>Submitted</th>
+                            <th>Reviewed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in task_completions %}
+                            <tr>
+                                <td>{{ task.app.name }}</td>
+                                <td>
+                                    {% if task.status == 'pending' %}
+                                        <span class="status-pending">
+                                            <i class="fas fa-clock me-1"></i> Pending
+                                        </span>
+                                    {% elif task.status == 'approved' %}
+                                        <span class="status-approved">
+                                            <i class="fas fa-check-circle me-1"></i> Approved
+                                        </span>
+                                    {% elif task.status == 'rejected' %}
+                                        <span class="status-rejected">
+                                            <i class="fas fa-times-circle me-1"></i> Rejected
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if task.status == 'approved' %}
+                                        <span class="badge bg-success">{{ task.points_earned }}</span>
+                                    {% elif task.status == 'pending' %}
+                                        <span class="badge bg-warning text-dark">{{ task.app.points }} (pending)</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">0</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ task.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    {% if task.reviewed_at %}
+                                        {{ task.reviewed_at.strftime('%Y-%m-%d %H:%M') }}
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% if task.admin_notes and task.status != 'pending' %}
+                                <tr class="table-light">
+                                    <td colspan="5" class="small">
+                                        <strong>Admin Notes:</strong> {{ task.admin_notes }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">You haven't submitted any tasks yet.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}My Dashboard - App Downloader{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- User Profile Summary -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-lg mt-4 mb-4">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        {% if profile.avatar %}
+                            <img src="{{ profile.avatar }}" alt="{{ user.username }}" class="rounded-circle" width="100" height="100">
+                        {% else %}
+                            <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                                <span class="text-white" style="font-size: 2rem;">{{ user.username|slice:":1" }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <h4>{{ user.username }}</h4>
+                    <p class="text-muted">{{ user.email }}</p>
+                    
+                    <div class="d-flex justify-content-center mt-3">
+                        <div class="px-3 border-end">
+                            <h5 class="mb-0 text-primary">{{ profile.total_points }}</h5>
+                            <small class="text-muted">Total Points</small>
+                        </div>
+                        <div class="px-3 border-end">
+                            <h5 class="mb-0 text-success">{{ completed_tasks|length }}</h5>
+                            <small class="text-muted">Completed</small>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'user_profile' %}" class="btn btn-outline-primary mt-3">
+                        <i class="fas fa-user-edit me-2"></i>Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-8">
+            <!-- Available Apps -->
+            <div class="card border-0 shadow-lg mt-4 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-mobile-alt me-2"></i>Available Apps to Download
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if available_apps %}
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                            {% for app in available_apps %}
+                                <div class="col">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center mb-3">
+                                                {% if app.icon_url %}
+                                                    <img src="{{ app.icon_url }}" alt="{{ app.name }}" class="me-2" width="48" height="48">
+                                                {% else %}
+                                                    <i class="fas fa-mobile-alt fa-2x me-2 text-muted"></i>
+                                                {% endif %}
+                                                <h5 class="card-title mb-0">{{ app.name }}</h5>
+                                            </div>
+                                            <p class="card-text small">{{ app.description|truncatechars:120 }}</p>
+                                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                                <span class="badge bg-success">{{ app.points }} Points</span>
+                                                <a href="{% url 'task_detail' app.id %}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-download me-1"></i>Download & Earn
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center p-4">
+                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <h5>You've completed all available tasks!</h5>
+                            <p class="text-muted">Check back later for new apps to download.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Completed Tasks -->
+            {% if completed_tasks %}
+                <div class="card border-0 shadow-lg mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-check-circle me-2"></i>Completed Tasks
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            {% for task in completed_tasks %}
+                                <div class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <h6 class="mb-1">{{ task.app.name }}</h6>
+                                        <small class="text-muted">{{ task.submitted_at|date:"M d, Y" }}</small>
+                                    </div>
+                                    <p class="mb-1 small">
+                                        Approved on {{ task.reviewed_at|date:"M d, Y" }}
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-success">
+                                            <i class="fas fa-check-circle me-1"></i>Approved
+                                        </small>
+                                        <span class="badge bg-success">{{ task.points_earned }} Points</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
